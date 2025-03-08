@@ -8,7 +8,7 @@ Projeto desenvolvido para a disciplina de **Sistemas Embarcados** ministrada pel
 
 ---
 
-## 🚀 Descrição do Projeto
+## Sistema detector de metais com atuador para descarte de materiais não metálicos 🚀 Descrição do Projeto:
 Sistema embarcado para controle na separação de materiais metálicos e não metálicos, capaz de identificar a presença de um objeto e mover para a posição correta o objeto designado com auxílio do sensor indutivo, muito utilizado em ambientes industriais. Desenvolvido com o microcontrolador ATmega328P (Arduino Uno), o projeto utiliza técnicas de  **interrupções internas por timer**, **interrupções externas para o sensor de metal** e **controle direto de registradores** para otimizar desempenho.
 
 ---
