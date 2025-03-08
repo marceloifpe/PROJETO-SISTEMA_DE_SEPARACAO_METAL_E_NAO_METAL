@@ -1,7 +1,7 @@
 # PROJETO-SISTEMA_DE_SEPARACAO_METAL_E_NAO_METAL
 
 
-![Diagrama do Sistema](esquema de montagem-Hardware.png)
+![Diagrama do Sistema](esquema_montagem-Hardware.png)
 
 Projeto desenvolvido para a disciplina de **Sistemas Embarcados** ministrada pelo **Prof. Henrique Patriota**.
 **Alunos:** Marcelo Augusto e Pedro Pereira.
