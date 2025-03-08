@@ -75,4 +75,4 @@ Este projeto está licenciado sob a GNU General Public License v3.0. Veja o arqu
 
 ## ✉️ Créditos
 - **Professor Orientador**: Prof. Henrique Patriota
-- **Desenvolvedores**: [Marcelo Augusto](https://github.com/marceloifpe) | [Pedro Pereira]((https://github.com/PedroHLP25))
+- **Desenvolvedores**: [Marcelo Augusto](https://github.com/marceloifpe) | [Pedro Pereira](https://github.com/PedroHLP25)
