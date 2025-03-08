@@ -28,7 +28,7 @@ Sistema embarcado para controle na separação de materiais metálicos e não me
 | Servo Motor              | MG90S Torque: 2,2kg/cm (6,0V) / 1,8kg/cm (4,8V);    | 1          |
 | Protoboard               | Quantidade de pontos: 830 e Tensão Máxima: 500V     | 1          |
 | Sensor Ultrassônico      | HC-SR04 Distância: 2cm até 500cm e 5v (DC)          | 1          |
-| Sensor Indutivo          | 6-36VDC, 300mA | NPN de Proximidade LJ12A3-4-Z/BX    | 1          |
+| Sensor Indutivo          | 6-36VDC, 300mA NPN de Proximidade LJ12A3-4-Z/BX     | 1          |
 | LEDs                     | Vermelho e Verde (5mm)                              | 2          |
 | Resistores               | 220Ω                                                | 2          |
 | Resistores               | 10KΩ                                                | 1          |
@@ -50,8 +50,8 @@ Extras/Opcional:
    - Arduino IDE 2.x ou Microchip Studio for AVR
 
 3. **Montagem do Hardware**:
-   - Conectar componentes conforme o diagrama acima e adicionar os dois Leds.
-   - Alimentar Arduino via USB e bomba via suporte de pilhas.
+   - Conectar componentes conforme o diagrama acima.
+   - Alimentar Arduino via USB e Sensor Indutivo via bateria externa de 9V.
 
 4. **Carregar Código**:
    - Abrir `código` na Arduino IDE.
