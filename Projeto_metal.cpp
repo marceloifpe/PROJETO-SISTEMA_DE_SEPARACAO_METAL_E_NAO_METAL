@@ -4,13 +4,18 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define SERVO_PIN 9   // Pino do servo motor
-#define TRIG_PIN 4    // Trigger do ultrassônico
-#define ECHO_PIN 5    // Echo do ultrassônico
+// Definição de pinos
+#define SERVO_PIN 9      // Pino do servo motor
+#define TRIG_PIN 4       // Trigger do ultrassônico
+#define ECHO_PIN 5       // Echo do ultrassônico
+#define SENSOR_METAL PD2 // Pino do sensor de metal (INT0)
+#define LED_VERDE PD6    // Pino do LED verde
+#define LED_VERMELHO PD7 // Pino do LED vermelho
 
 Servo meuServo;
 Ultrasonic sensorUltrassonico(TRIG_PIN, ECHO_PIN);
-//Variáveis Globais
+
+// Variáveis Globais
 volatile bool detectouMetal = false;  // Flag para metal detectado
 unsigned long tempoInicial = 0;       // Tempo de detecção do objeto
 bool objetoDetectado = false;         // Flag para objeto detectado
@@ -21,8 +26,8 @@ const unsigned long tempoMaximoEspera = 4000; // Tempo máximo de espera para de
 
 void setup() {
     // Configura os pinos de entrada e saída
-    DDRD &= ~(1 << PD2);  // Configura SENSOR_METAL como entrada
-    DDRD |= (1 << PD6) | (1 << PD7);  // Configura LEDs como saída
+    DDRD &= ~(1 << SENSOR_METAL); // Configura SENSOR_METAL como entrada
+    DDRD |= (1 << LED_VERDE) | (1 << LED_VERMELHO); // Configura LEDs como saída
 
     // Inicializa o servo e o sensor ultrassônico
     Serial.begin(9600);
@@ -33,11 +38,6 @@ void setup() {
     EICRA |= (1 << ISC01);  // Configura INT0 para borda de descida
     EIMSK |= (1 << INT0);   // Habilita INT0
 
-    // Configura Timer2 para interrupção por overflow (1ms aprox.)
-    cli();  // Desabilita interrupções globais
-    TCCR2B = (1 << CS22);  // Prescaler de 64 (aproximadamente 1ms por overflow)
-    TIMSK2 = (1 << TOIE2);  // Habilita a interrupção por overflow do Timer2
-    TCNT2 = 5;  // Inicializa o Timer2 com valor 5 (aproximadamente 1ms)
     sei();  // Habilita interrupções globais
 }
 
@@ -63,8 +63,8 @@ void loop() {
         if (detectouMetal && millis() - tempoInicial >= tempoEsperaMetal) {
             // Metal detectado dentro de 2 segundos
             Serial.println("Metal detectado! Movendo para direita...");
-            PORTD |= (1 << PD6);  // Acende LED verde
-            PORTD &= ~(1 << PD7);  // Apaga LED vermelho
+            PORTD |= (1 << LED_VERDE);  // Acende LED verde
+            PORTD &= ~(1 << LED_VERMELHO);  // Apaga LED vermelho
             meuServo.write(45);  // Move o servo para a esquerda
             tempoMovimento = millis();  // Marca o tempo do movimento
             movimentoServo = true;  // Impede movimento repetido
@@ -72,8 +72,8 @@ void loop() {
         } else if (millis() - tempoInicial >= tempoMaximoEspera) {
             // Metal não detectado após 4 segundos
             Serial.println("Nenhum metal detectado após 4s. Movendo para esquerda...");
-            PORTD |= (1 << PD7);  // Acende LED vermelho
-            PORTD &= ~(1 << PD6);  // Apaga LED verde
+            PORTD |= (1 << LED_VERMELHO);  // Acende LED vermelho
+            PORTD &= ~(1 << LED_VERDE);  // Apaga LED verde
             meuServo.write(135);  // Move o servo para a direita
             tempoMovimento = millis();  // Marca o tempo do movimento
             movimentoServo = true;  // Impede movimento repetido
@@ -83,10 +83,10 @@ void loop() {
     // Retorna o servo à posição inicial após 700ms
     if (movimentoServo && millis() - tempoMovimento >= 700) {
         meuServo.write(90);  // Retorna o servo para a posição inicial
-        PORTD &= ~((1 << PD6) | (1 << PD7));  // Apaga LEDs
+        PORTD &= ~((1 << LED_VERDE) | (1 << LED_VERMELHO));  // Apaga LEDs
         objetoDetectado = false;  // Reseta a detecção de objeto
         movimentoServo = false;  // Reseta o controle do movimento
-        Serial.println("Retornando ao centro descarte Realizado !...");
+        Serial.println("Retornando ao centro, descarte realizado!");
     }
 }
 
@@ -94,9 +94,4 @@ void loop() {
 ISR(INT0_vect) {
     detectouMetal = true;  // Marca que o metal foi detectado
     Serial.println("Metal detectado!");
-}
-
-// Interrupção do Timer2 para overflow (aproximadamente 1ms)
-ISR(TIMER2_OVF_vect) {
-    TCNT2 = 5;  // Reinicia o timer
 }
