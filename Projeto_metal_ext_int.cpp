@@ -11,9 +11,9 @@ Ultrasonic sensorUltrassonico(0b100, 0b101); // Pinos 4 (TRIG) e 5 (ECHO)
 volatile bool detectouMetal = false;
 volatile uint16_t contador2s = 0;    // Contador para 2 segundos
 volatile uint16_t contador4s = 0;    // Contador para 4 segundos
+volatile uint16_t contadorMovServo = 0; // Contador para movimento do servo
 bool objetoDetectado = false;
 bool movimentoServo = false;
-unsigned long tempoMovimento = 0;
 
 void setup() {
     // Configuração de portas (PD4=TRIG como saída, PD2=entrada, PD6/PD7=LEDs)
@@ -47,14 +47,13 @@ void loop() {
 
         if (distancia > 0 && distancia <= 10) {
             objetoDetectado = true;
-            contador2s = 0;  // Reinicia contadores
+            contador2s = 0;
             contador4s = 0;
             Serial.println("Objeto detectado, aguardando sensor de metal...");
         }
     }
 
     if (objetoDetectado && !movimentoServo) {
-        // Usa variáveis locais para leitura atômica
         uint16_t cont2s, cont4s;
         cli();
         cont2s = contador2s;
@@ -65,7 +64,7 @@ void loop() {
             Serial.println("Metal detectado! Movendo para direita...");
             PORTD = 0b01000000;  // LED verde
             meuServo.write(45);
-            tempoMovimento = millis();
+            contadorMovServo = 0; // Inicia contagem para retorno
             movimentoServo = true;
             detectouMetal = false;
         }
@@ -73,17 +72,25 @@ void loop() {
             Serial.println("Nenhum metal detectado após 4s. Movendo para esquerda...");
             PORTD = 0b10000000;  // LED vermelho
             meuServo.write(135);
-            tempoMovimento = millis();
+            contadorMovServo = 0; // Inicia contagem para retorno
             movimentoServo = true;
         }
     }
 
-    if (movimentoServo && millis() - tempoMovimento >= 700) {
-        meuServo.write(90);
-        PORTD = 0b00000000;  // LEDs off
-        objetoDetectado = false;
-        movimentoServo = false;
-        Serial.println("Retornando ao centro - Descarte realizado!");
+    if (movimentoServo) {
+        uint16_t contMovServo;
+        cli();
+        contMovServo = contadorMovServo;
+        sei();
+
+        if (contMovServo >= 700) { // 700 ms para retornar ao centro
+            meuServo.write(90);
+            PORTD = 0b00000000;  // LEDs off
+            objetoDetectado = false;
+            movimentoServo = false;
+            contadorMovServo = 0; // Reset
+            Serial.println("Retornando ao centro - Descarte realizado!");
+        }
     }
 }
 
@@ -97,9 +104,12 @@ ISR(INT0_vect) {
 ISR(TIMER2_OVF_vect) {
     TCNT2 = 5; // Reinicia contador
 
-    // Atualiza contadores de tempo
     if (objetoDetectado) {
         contador2s++;
         contador4s++;
+    }
+
+    if (movimentoServo) {
+        contadorMovServo++;
     }
 }
