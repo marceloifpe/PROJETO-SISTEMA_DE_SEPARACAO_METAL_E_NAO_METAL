@@ -9,9 +9,9 @@ Ultrasonic sensorUltrassonico(0b100, 0b101); // Pinos 4 (TRIG) e 5 (ECHO)
 
 // Variáveis Globais
 volatile bool detectouMetal = false;
-volatile uint16_t contador2s = 0;    // Contador para 2 segundos
-volatile uint16_t contador4s = 0;    // Contador para 4 segundos
-volatile uint16_t contadorMovServo = 0; // Contador para movimento do servo
+volatile int contador2s = 0;    // Contador para 2 segundos
+volatile int contador4s = 0;    // Contador para 4 segundos
+volatile int contadorMovServo = 0; // Contador para movimento do servo
 bool objetoDetectado = false;
 bool movimentoServo = false;
 
@@ -54,7 +54,7 @@ void loop() {
     }
 
     if (objetoDetectado && !movimentoServo) {
-        uint16_t cont2s, cont4s;
+        int cont2s, cont4s;
         cli();
         cont2s = contador2s;
         cont4s = contador4s;
@@ -78,7 +78,7 @@ void loop() {
     }
 
     if (movimentoServo) {
-        uint16_t contMovServo;
+        int contMovServo;
         cli();
         contMovServo = contadorMovServo;
         sei();
