@@ -45,7 +45,7 @@ void loop() {
         Serial.print(distancia);
         Serial.println(" cm");
 
-        if (distancia > 0 && distancia <= 10) {
+        if (distancia > 0 && distancia <= 8) {
             objetoDetectado = true;
             tempoInicial = millis();
             Serial.println("Objeto detectado, aguardando sensor de metal...");
